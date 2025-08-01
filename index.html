@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Help Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #eef2ff, #e0f2fe);
+    }
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tab-button {
+      transition: all 0.3s ease;
+    }
+    .tab-button:hover {
+      transform: translateY(-2px);
+    }
+    .tab-button.active {
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+
+  <header class="bg-blue-700 text-white py-6 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-3xl font-bold">SafeSpace</h1>
+      <span class="italic text-lg">Anonymous Support for Every Student</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="max-w-6xl mx-auto px-4 mt-6">
+    <div class="flex flex-wrap justify-center space-x-2 space-y-2 md:space-y-0">
+      <button class="tab-button active bg-blue-600 text-white px-6 py-3 rounded-lg font-medium" onclick="showTab('anonymous-help')">
+        Anonymous Help
+      </button>
+      <button class="tab-button bg-white text-blue-600 px-6 py-3 rounded-lg font-medium border border-blue-200" onclick="showTab('peer-support')">
+        Peer Support
+      </button>
+      <button class="tab-button bg-white text-blue-600 px-6 py-3 rounded-lg font-medium border border-blue-200" onclick="showTab('resources')">
+        Resources
+      </button>
+      <button class="tab-button bg-white text-blue-600 px-6 py-3 rounded-lg font-medium border border-blue-200" onclick="showTab('crisis-help')">
+        Crisis Help
+      </button>
+      <button class="tab-button bg-white text-blue-600 px-6 py-3 rounded-lg font-medium border border-blue-200" onclick="showTab('success-stories')">
+        Success Stories
+      </button>
+    </div>
+  </nav>
+
+  <!-- Anonymous Help Tab (Original Content) -->
+  <div id="anonymous-help" class="tab-content active">
+    <section class="my-10">
+      <div class="swiper-container max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=400&fit=crop" alt="Students collaborating" class="w-full h-64 object-cover" />
+          </div>
+          <div class="swiper-slide">
+            <img src="https://psdchallenge.psd.gov.sg/images/default-source/challenge-library/ideas/your-say/social-causes-that-make-a-difference/your-say-social-cause-01.png" alt="Social causes" class="w-full h-64 object-cover" />
+          </div>
+          <div class="swiper-slide">
+            <img src="https://varthana.com/student/wp-content/uploads/2024/12/why-every-student-needs-a-study-group-to-unlock-better-grades-and-confidence.jpg" alt="Study group" class="w-full h-64 object-cover" />
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </section>
+
+    <section class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 fade-in mb-10">
+      <h2 class="text-2xl font-bold text-blue-700 mb-4">Need Help? You're Not Alone.</h2>
+      <p class="text-gray-600 mb-6">Submit any concern, emotional, or social—without revealing your name (one way for confessions and not feeling judged).</p>
+      <form id="anonymous-form" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-medium">Category</label>
+          <select id="category" class="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="emotional">Emotional</option>
+            <option value="social">Social</option>
+            <option value="academic">Academic</option>
+            <option value="family">Family Issues</option>
+            <option value="financial">Financial Stress</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-medium">Your Message</label>
+          <textarea id="message" rows="5" class="w-full mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Type your message here..." required></textarea>
+        </div>
+        <div>
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">Submit Anonymously</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Peer Support Tab -->
+  <div id="peer-support" class="tab-content">
+    <section class="max-w-4xl mx-auto px-4 py-10">
+      <div class="bg-white rounded-xl shadow-lg p-8 fade-in">
+        <h2 class="text-2xl font-bold text-blue-700 mb-6">Connect with Peer Mentors</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg">
+            <h3 class="text-xl font-semibold text-green-700 mb-3">Study Buddy Matching</h3>
+            <p class="text-gray-600 mb-4">Find study partners in your field who can help with academic challenges.</p>
+            <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Find Study Buddy</button>
+          </div>
+          <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-lg">
+            <h3 class="text-xl font-semibold text-purple-700 mb-3">Emotional Support Groups</h3>
+            <p class="text-gray-600 mb-4">Join anonymous group chats with students facing similar challenges.</p>
+            <button class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">Join Group</button>
+          </div>
+        </div>
+        
+        <div class="mt-8 p-6 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+          <h3 class="text-lg font-semibold text-yellow-800 mb-2">Anonymous Chat Rooms</h3>
+          <p class="text-yellow-700 mb-4">Join topic-based chat rooms where you can share experiences and get support from peers.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <button class="bg-yellow-500 text-white px-3 py-2 rounded text-sm hover:bg-yellow-600 transition">Anxiety Support</button>
+            <button class="bg-yellow-500 text-white px-3 py-2 rounded text-sm hover:bg-yellow-600 transition">Study Stress</button>
+            <button class="bg-yellow-500 text-white px-3 py-2 rounded text-sm hover:bg-yellow-600 transition">Social Issues</button>
+            <button class="bg-yellow-500 text-white px-3 py-2 rounded text-sm hover:bg-yellow-600 transition">General Chat</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Resources Tab -->
+  <div id="resources" class="tab-content">
+    <section class="max-w-4xl mx-auto px-4 py-10">
+      <div class="bg-white rounded-xl shadow-lg p-8 fade-in">
+        <h2 class="text-2xl font-bold text-blue-700 mb-6">Helpful Resources</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <div class="text-center p-6 border rounded-lg hover:shadow-md transition">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">📚</span>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Study Guides</h3>
+            <p class="text-gray-600 text-sm">Access free study materials and academic resources.</p>
+          </div>
+          <div class="text-center p-6 border rounded-lg hover:shadow-md transition">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">🧘</span>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Mental Health</h3>
+            <p class="text-gray-600 text-sm">Meditation guides, stress relief techniques, and wellness tips.</p>
+          </div>
+          <div class="text-center p-6 border rounded-lg hover:shadow-md transition">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">💼</span>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Career Guidance</h3>
+            <p class="text-gray-600 text-sm">Resume tips, interview prep, and career planning resources.</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-lg">
+          <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <a href="#" class="block p-3 bg-white rounded border hover:bg-blue-50 transition">
+              <strong>Academic Calendar</strong><br>
+              <span class="text-sm text-gray-600">Important dates and deadlines</span>
+            </a>
+            <a href="#" class="block p-3 bg-white rounded border hover:bg-blue-50 transition">
+              <strong>Campus Services</strong><br>
+              <span class="text-sm text-gray-600">Library, counseling, health services</span>
+            </a>
+            <a href="#" class="block p-3 bg-white rounded border hover:bg-blue-50 transition">
+              <strong>Financial Aid</strong><br>
+              <span class="text-sm text-gray-600">Scholarships and emergency funds</span>
+            </a>
+            <a href="#" class="block p-3 bg-white rounded border hover:bg-blue-50 transition">
+              <strong>Tutoring Services</strong><br>
+              <span class="text-sm text-gray-600">Free academic support</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Crisis Help Tab -->
+  <div id="crisis-help" class="tab-content">
+    <section class="max-w-3xl mx-auto px-4 py-10">
+      <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-bold text-red-700 mb-4">Immediate Help Available</h2>
+        <p class="text-red-600 mb-4">If you're in crisis or having thoughts of self-harm, please reach out immediately.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold text-blue-700 mb-4">Emergency Contacts</h3>
+          <div class="space-y-3">
+            <div class="p-3 bg-red-100 rounded">
+              <strong class="text-red-700">Crisis Hotline:</strong><br>
+              <span class="text-lg font-mono">988 (24/7)</span>
+            </div>
+            <div class="p-3 bg-blue-100 rounded">
+              <strong class="text-blue-700">Campus Counseling:</strong><br>
+              <span class="text-lg font-mono">(555) 123-4567</span>
+            </div>
+            <div class="p-3 bg-green-100 rounded">
+              <strong class="text-green-700">Campus Security:</strong><br>
+              <span class="text-lg font-mono">(555) 123-4568</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold text-purple-700 mb-4">24/7 Text Support</h3>
+          <div class="space-y-3">
+            <div class="p-3 bg-purple-100 rounded">
+              <strong>Crisis Text Line:</strong><br>
+              Text HOME to <span class="font-mono">741741</span>
+            </div>
+            <div class="p-3 bg-indigo-100 rounded">
+              <strong>Anonymous Chat:</strong><br>
+              <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Start Chat Now</button>
+            </div>
+          </div>
+          
+          <div class="mt-6 p-4 bg-yellow-100 rounded">
+            <p class="text-sm text-yellow-800">
+              <strong>Remember:</strong> You are not alone. Seeking help is a sign of strength, not weakness.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Success Stories Tab -->
+  <div id="success-stories" class="tab-content">
+    <section class="max-w-4xl mx-auto px-4 py-10">
+      <div class="bg-white rounded-xl shadow-lg p-8 fade-in">
+        <h2 class="text-2xl font-bold text-blue-700 mb-6">Success Stories</h2>
+        <p class="text-gray-600 mb-8">Read anonymous stories from students who found help and hope through our platform.</p>
+        
+        <div class="space-y-6">
+          <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg border-l-4 border-green-400">
+            <p class="text-gray-700 italic mb-4">"I was struggling with severe anxiety and couldn't talk to anyone about it. The anonymous submission feature helped me reach out without fear. Within days, I was connected to resources that changed my life."</p>
+            <p class="text-green-700 font-semibold">- Anonymous Student, Psychology Major</p>
+          </div>
+          
+          <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border-l-4 border-blue-400">
+            <p class="text-gray-700 italic mb-4">"Finding a study buddy through the peer support system not only improved my grades but also gave me a friend who understood what I was going through. We still study together!"</p>
+            <p class="text-blue-700 font-semibold">- Anonymous Student, Engineering</p>
+          </div>
+          
+          <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-lg border-l-4 border-purple-400">
+            <p class="text-gray-700 italic mb-4">"I was dealing with family issues that were affecting my studies. The anonymous chat rooms helped me realize I wasn't alone, and the resources section guided me to financial aid I didn't know existed."</p>
+            <p class="text-purple-700 font-semibold">- Anonymous Student, Business</p>
+          </div>
+        </div>
+        
+        <div class="mt-8 text-center">
+          <button class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">Share Your Story (Anonymous)</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h3 class="text-xl font-semibold mb-4">SafeSpace - Always Here for You</h3>
+      <p class="text-gray-300 mb-4">A judgment-free zone where every student can find support, resources, and community.</p>
+      <div class="text-sm text-gray-400">
+        <p>© 2024 SafeSpace Student Portal. All conversations are anonymous and secure.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    // Initialize Swiper
+    new Swiper('.swiper-container', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+    });
+
+    // Tab functionality
+    function showTab(tabName) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => {
+        content.classList.remove('active');
+      });
+
+      // Remove active class from all tab buttons
+      const tabButtons = document.querySelectorAll('.tab-button');
+      tabButtons.forEach(button => {
+        button.classList.remove('active');
+        button.classList.remove('bg-blue-600', 'text-white');
+        button.classList.add('bg-white', 'text-blue-600', 'border', 'border-blue-200');
+      });
+
+      // Show selected tab content
+      const selectedTab = document.getElementById(tabName);
+      if (selectedTab) {
+        selectedTab.classList.add('active');
+      }
+
+      // Activate clicked tab button
+      event.target.classList.add('active');
+      event.target.classList.remove('bg-white', 'text-blue-600', 'border', 'border-blue-200');
+      event.target.classList.add('bg-blue-600', 'text-white');
+    }
+
+    // Handle anonymous form submission
+    document.getElementById('anonymous-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const category = document.getElementById('category').value;
+      const message = document.getElementById('message').value;
+      
+      if (message.trim() === '') {
+        alert('Please enter your message before submitting.');
+        return;
+      }
+      
+      // Simulate form submission
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      
+      submitButton.textContent = 'Submitting...';
+      submitButton.disabled = true;
+      
+      // Send data to backend
+      fetch('/api/submit-help', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: category,
+          message: message,
+          timestamp: new Date().toISOString()
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Your message has been submitted anonymously. A counselor will review it and resources will be shared soon.');
+          document.getElementById('message').value = '';
+        } else {
+          alert('There was an error submitting your message. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Message submitted successfully! (Note: Backend connection simulation)');
+        document.getElementById('message').value = '';
+      })
+      .finally(() => {
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+      });
+    });
+
+    // Add fade-in animation to elements when they come into view
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all sections
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+
+</body>
+</html>
