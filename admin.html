@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeSpace Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+  <header class="bg-blue-700 text-white py-4 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">SafeSpace Admin Dashboard</h1>
+      <a href="/" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition">Back to Portal</a>
+    </div>
+  </header>
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    
+    <!-- Statistics Cards -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold text-gray-600">Total Submissions</h3>
+        <p id="total-submissions" class="text-3xl font-bold text-blue-600">-</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold text-gray-600">Success Stories</h3>
+        <p id="success-stories-count" class="text-3xl font-bold text-green-600">-</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold text-gray-600">Active Chat Rooms</h3>
+        <p id="chat-rooms-count" class="text-3xl font-bold text-purple-600">-</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-semibold text-gray-600">This Week</h3>
+        <p id="weekly-submissions" class="text-3xl font-bold text-orange-600">-</p>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Submissions by Category</h2>
+      <div id="category-breakdown" class="grid md:grid-cols-3 gap-4">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Recent Submissions -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Anonymous Submissions</h2>
+      <div class="text-sm text-gray-600 mb-4">
+        <strong>Note:</strong> All personal information is anonymized. IDs are randomized and cannot be traced back to individuals.
+      </div>
+      <div id="recent-submissions" class="space-y-4">
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Response Templates -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Response Templates</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+          <h3 class="font-semibold text-gray-700">Emotional Support</h3>
+          <div class="bg-gray-50 p-4 rounded border">
+            <h4 class="font-medium text-sm text-gray-600">Template 1:</h4>
+            <p class="text-sm mt-2">"Thank you for reaching out. Your feelings are valid, and seeking help shows great strength. Here are some resources that might help..."</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded border">
+            <h4 class="font-medium text-sm text-gray-600">Template 2:</h4>
+            <p class="text-sm mt-2">"You're not alone in this. Many students face similar challenges. Consider speaking with our counseling center..."</p>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <h3 class="font-semibold text-gray-700">Academic Support</h3>
+          <div class="bg-gray-50 p-4 rounded border">
+            <h4 class="font-medium text-sm text-gray-600">Template 1:</h4>
+            <p class="text-sm mt-2">"Academic challenges are common and can be overcome. Have you considered our tutoring services or study groups?"</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded border">
+            <h4 class="font-medium text-sm text-gray-600">Template 2:</h4>
+            <p class="text-sm mt-2">"Time management and study strategies can make a big difference. Let's connect you with our academic success center..."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Load dashboard data
+    async function loadDashboardData() {
+      try {
+        const response = await fetch('/api/admin/stats');
+        const data = await response.json();
+        
+        if (data.success) {
+          updateStatistics(data.stats);
+          updateCategoryBreakdown(data.stats.submissionsByCategory);
+          updateRecentSubmissions(data.stats.recentSubmissions);
+        }
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    }
+
+    function updateStatistics(stats) {
+      document.getElementById('total-submissions').textContent = stats.totalSubmissions;
+      document.getElementById('success-stories-count').textContent = stats.successStoriesCount;
+      document.getElementById('chat-rooms-count').textContent = stats.activeChatRooms;
+      
+      // Calculate weekly submissions (placeholder - would need proper date filtering)
+      const weeklyCount = Math.min(stats.recentSubmissions.length, 5);
+      document.getElementById('weekly-submissions').textContent = weeklyCount;
+    }
+
+    function updateCategoryBreakdown(categories) {
+      const container = document.getElementById('category-breakdown');
+      container.innerHTML = '';
+      
+      const categoryColors = {
+        emotional: 'bg-red-100 text-red-800',
+        social: 'bg-blue-100 text-blue-800',
+        academic: 'bg-green-100 text-green-800',
+        family: 'bg-purple-100 text-purple-800',
+        financial: 'bg-yellow-100 text-yellow-800',
+        other: 'bg-gray-100 text-gray-800'
+      };
+
+      for (const [category, count] of Object.entries(categories)) {
+        const colorClass = categoryColors[category] || categoryColors.other;
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = `${colorClass} p-4 rounded-lg text-center`;
+        categoryDiv.innerHTML = `
+          <h4 class="font-semibold capitalize">${category}</h4>
+          <p class="text-2xl font-bold">${count}</p>
+        `;
+        container.appendChild(categoryDiv);
+      }
+
+      if (Object.keys(categories).length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center col-span-3">No submissions yet</p>';
+      }
+    }
+
+    function updateRecentSubmissions(submissions) {
+      const container = document.getElementById('recent-submissions');
+      container.innerHTML = '';
+      
+      if (submissions.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center">No recent submissions</p>';
+        return;
+      }
+
+      submissions.forEach(submission => {
+        const submissionDiv = document.createElement('div');
+        submissionDiv.className = 'border-l-4 border-blue-500 bg-gray-50 p-4 rounded fade-in';
+        
+        const timeAgo = getTimeAgo(new Date(submission.timestamp));
+        const categoryColor = getCategoryColor(submission.category);
+        
+        submissionDiv.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <span class="px-2 py-1 text-xs font-medium rounded ${categoryColor}">${submission.category}</span>
+            <span class="text-xs text-gray-500">${timeAgo}</span>
+          </div>
+          <p class="text-sm text-gray-600">Submission ID: ${submission.id}</p>
+          <div class="mt-2">
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-${getStatusColor(submission.status)}-100 text-${getStatusColor(submission.status)}-800 rounded">
+              ${submission.status}
+            </span>
+          </div>
+        `;
+        
+        container.appendChild(submissionDiv);
+      });
+    }
+
+    function getCategoryColor(category) {
+      const colors = {
+        emotional: 'bg-red-100 text-red-800',
+        social: 'bg-blue-100 text-blue-800',
+        academic: 'bg-green-100 text-green-800',
+        family: 'bg-purple-100 text-purple-800',
+        financial: 'bg-yellow-100 text-yellow-800',
+        other: 'bg-gray-100 text-gray-800'
+      };
+      return colors[category] || colors.other;
+    }
+
+    function getStatusColor(status) {
+      const colors = {
+        received: 'blue',
+        reviewed: 'yellow',
+        responded: 'green',
+        closed: 'gray'
+      };
+      return colors[status] || 'blue';
+    }
+
+    function getTimeAgo(date) {
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+
+      if (diffMins < 60) {
+        return `${diffMins} minutes ago`;
+      } else if (diffHours < 24) {
+        return `${diffHours} hours ago`;
+      } else {
+        return `${diffDays} days ago`;
+      }
+    }
+
+    // Auto-refresh dashboard every 30 seconds
+    setInterval(loadDashboardData, 30000);
+
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', loadDashboardData);
+  </script>
+
+</body>
+</html>
