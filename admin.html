@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeSpace - Counselor Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+    }
+    .priority-high { border-left: 4px solid #ef4444; }
+    .priority-medium { border-left: 4px solid #f59e0b; }
+    .priority-low { border-left: 4px solid #10b981; }
+    .priority-crisis { border-left: 4px solid #dc2626; background-color: #fef2f2; }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-blue-800 text-white py-4 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-user-md text-2xl"></i>
+        <h1 class="text-2xl font-bold">SafeSpace Admin Dashboard</h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span class="text-sm">Welcome, Counselor</span>
+        <div class="flex items-center space-x-2">
+          <span id="connectionStatus" class="w-3 h-3 bg-green-400 rounded-full"></span>
+          <span class="text-sm">Online</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="bg-white shadow-md mb-6">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex space-x-8">
+        <button class="nav-tab active py-4 px-6 border-b-2 border-blue-600 text-blue-600 font-medium" 
+                onclick="showSection('help-requests')">
+          <i class="fas fa-inbox mr-2"></i>
+          Help Requests
+          <span id="pendingCount" class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+        </button>
+        <button class="nav-tab py-4 px-6 border-b-2 border-transparent text-gray-600 font-medium hover:text-blue-600" 
+                onclick="showSection('analytics')">
+          <i class="fas fa-chart-bar mr-2"></i>
+          Analytics
+        </button>
+        <button class="nav-tab py-4 px-6 border-b-2 border-transparent text-gray-600 font-medium hover:text-blue-600" 
+                onclick="showSection('success-stories')">
+          <i class="fas fa-star mr-2"></i>
+          Success Stories
+        </button>
+        <button class="nav-tab py-4 px-6 border-b-2 border-transparent text-gray-600 font-medium hover:text-blue-600" 
+                onclick="showSection('chat-monitor')">
+          <i class="fas fa-comments mr-2"></i>
+          Live Chat
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto px-4">
+    
+    <!-- Help Requests Section -->
+    <div id="help-requests" class="section active">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Pending Help Requests</h2>
+        <button onclick="refreshRequests()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+          <i class="fas fa-refresh mr-2"></i>Refresh
+        </button>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div class="flex flex-wrap gap-4">
+          <select id="categoryFilter" class="border border-gray-300 rounded-md px-3 py-2">
+            <option value="">All Categories</option>
+            <option value="academic">Academic</option>
+            <option value="emotional">Emotional</option>
+            <option value="social">Social</option>
+            <option value="financial">Financial</option>
+            <option value="career">Career</option>
+            <option value="other">Other</option>
+          </select>
+          <select id="urgencyFilter" class="border border-gray-300 rounded-md px-3 py-2">
+            <option value="">All Urgencies</option>
+            <option value="crisis">Crisis</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+          <button onclick="applyFilters()" class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+            Apply Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Help Requests List -->
+      <div id="requestsList" class="space-y-4">
+        <!-- Requests will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div id="analytics" class="section">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Platform Analytics</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Total Requests</p>
+              <p id="totalRequests" class="text-3xl font-bold text-blue-600">-</p>
+            </div>
+            <i class="fas fa-envelope text-3xl text-blue-600"></i>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Responded</p>
+              <p id="respondedRequests" class="text-3xl font-bold text-green-600">-</p>
+            </div>
+            <i class="fas fa-check-circle text-3xl text-green-600"></i>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600">Response Rate</p>
+              <p id="responseRate" class="text-3xl font-bold text-purple-600">-</p>
+            </div>
+            <i class="fas fa-percentage text-3xl text-purple-600"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mood Analytics -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold mb-4">Student Mood Trends (Last 30 Days)</h3>
+        <div id="moodChart" class="h-64 flex items-center justify-center">
+          <div class="grid grid-cols-5 gap-4 w-full">
+            <div class="text-center">
+              <div class="text-2xl mb-2">😊</div>
+              <div class="text-sm font-medium">Great</div>
+              <div id="moodGreat" class="text-lg font-bold text-green-600">-</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl mb-2">🙂</div>
+              <div class="text-sm font-medium">Good</div>
+              <div id="moodGood" class="text-lg font-bold text-blue-600">-</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl mb-2">😐</div>
+              <div class="text-sm font-medium">Okay</div>
+              <div id="moodOkay" class="text-lg font-bold text-yellow-600">-</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl mb-2">😰</div>
+              <div class="text-sm font-medium">Stressed</div>
+              <div id="moodStressed" class="text-lg font-bold text-orange-600">-</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl mb-2">😢</div>
+              <div class="text-sm font-medium">Sad</div>
+              <div id="moodSad" class="text-lg font-bold text-red-600">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Stories Section -->
+    <div id="success-stories" class="section">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Success Stories Management</h2>
+        <button onclick="loadSuccessStories()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+          <i class="fas fa-refresh mr-2"></i>Refresh
+        </button>
+      </div>
+
+      <div id="successStoriesList" class="space-y-4">
+        <!-- Success stories will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Chat Monitor Section -->
+    <div id="chat-monitor" class="section">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Live Chat Monitor</h2>
+      
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Active Chat Sessions</h3>
+          <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+            <span id="activeSessions">0</span> Active
+          </span>
+        </div>
+        
+        <div id="chatSessions" class="space-y-4">
+          <div class="text-center text-gray-500 py-8">
+            <i class="fas fa-comments text-4xl mb-4"></i>
+            <p>No active chat sessions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Response Modal -->
+  <div id="responseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-96 overflow-hidden">
+      <div class="p-6 border-b">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold">Respond to Help Request</h3>
+          <button onclick="closeResponseModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-6 max-h-64 overflow-y-auto">
+        <div id="requestDetails" class="mb-4">
+          <!-- Request details will be shown here -->
+        </div>
+        
+        <form id="responseForm" class="space-y-4">
+          <input type="hidden" id="responseRequestId" />
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Your Response</label>
+            <textarea id="responseMessage" rows="4" class="w-full border border-gray-300 rounded-md p-3" 
+                      placeholder="Type your supportive response here..."></textarea>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="makePublic" class="mr-2" />
+            <label for="makePublic" class="text-sm text-gray-700">
+              Make this response public (to help other students with similar issues)
+            </label>
+          </div>
+          <div class="flex justify-end space-x-3">
+            <button type="button" onclick="closeResponseModal()" 
+                    class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+              Cancel
+            </button>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+              Send Response
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notifications" class="notification"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    // Global variables
+    let socket;
+    let allRequests = [];
+    let filteredRequests = [];
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeSocket();
+      loadPendingRequests();
+      loadAnalytics();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(() => {
+        loadPendingRequests();
+        loadAnalytics();
+      }, 30000);
+    });
+
+    // Socket.IO connection
+    function initializeSocket() {
+      socket = io();
+      
+      socket.on('connect', () => {
+        console.log('Connected to server');
+        socket.emit('join-counselor', 'counselor-demo');
+        updateConnectionStatus(true);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Disconnected from server');
+        updateConnectionStatus(false);
+      });
+
+      socket.on('newHelpRequest', (data) => {
+        showNotification('New help request received!', 'info');
+        loadPendingRequests();
+      });
+
+      socket.on('student-message', (data) => {
+        showNotification(`New message from student chat`, 'info');
+        updateChatMonitor(data);
+      });
+    }
+
+    function updateConnectionStatus(connected) {
+      const status = document.getElementById('connectionStatus');
+      if (connected) {
+        status.className = 'w-3 h-3 bg-green-400 rounded-full';
+      } else {
+        status.className = 'w-3 h-3 bg-red-400 rounded-full';
+      }
+    }
+
+    // Navigation
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none';
+      });
+      
+      // Remove active class from all nav tabs
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active', 'border-blue-600', 'text-blue-600');
+        tab.classList.add('border-transparent', 'text-gray-600');
+      });
+      
+      // Show selected section
+      const section = document.getElementById(sectionId);
+      section.classList.add('active');
+      section.style.display = 'block';
+      
+      // Update active tab
+      event.target.classList.remove('border-transparent', 'text-gray-600');
+      event.target.classList.add('active', 'border-blue-600', 'text-blue-600');
+
+      // Load section-specific data
+      if (sectionId === 'analytics') {
+        loadAnalytics();
+      } else if (sectionId === 'success-stories') {
+        loadSuccessStories();
+      }
+    }
+
+    // Load pending help requests
+    async function loadPendingRequests() {
+      try {
+        const response = await fetch('/api/counselor/pending-requests');
+        allRequests = await response.json();
+        filteredRequests = [...allRequests];
+        renderRequests();
+        updatePendingCount();
+      } catch (error) {
+        console.error('Error loading requests:', error);
+        showNotification('Error loading requests', 'error');
+      }
+    }
+
+    function renderRequests() {
+      const container = document.getElementById('requestsList');
+      
+      if (filteredRequests.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-inbox text-4xl mb-4"></i>
+            <p>No pending requests</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filteredRequests.map(request => `
+        <div class="bg-white rounded-lg shadow-md p-6 priority-${request.urgency} fade-in">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center space-x-3">
+              <span class="bg-${getUrgencyColor(request.urgency)}-100 text-${getUrgencyColor(request.urgency)}-800 px-3 py-1 rounded-full text-sm font-medium">
+                ${request.urgency.toUpperCase()}
+              </span>
+              <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                ${request.category}
+              </span>
+            </div>
+            <span class="text-sm text-gray-500">
+              ${new Date(request.createdAt).toLocaleString()}
+            </span>
+          </div>
+          
+          <div class="mb-4">
+            <p class="text-gray-700 leading-relaxed">${request.message}</p>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-500">ID: ${request.id}</span>
+            <button onclick="openResponseModal('${request.id}')" 
+                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">
+              <i class="fas fa-reply mr-2"></i>Respond
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getUrgencyColor(urgency) {
+      switch (urgency) {
+        case 'crisis': return 'red';
+        case 'high': return 'red';
+        case 'medium': return 'yellow';
+        case 'low': return 'green';
+        default: return 'gray';
+      }
+    }
+
+    function updatePendingCount() {
+      const count = filteredRequests.length;
+      document.getElementById('pendingCount').textContent = count;
+    }
+
+    // Filter functionality
+    function applyFilters() {
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const urgencyFilter = document.getElementById('urgencyFilter').value;
+      
+      filteredRequests = allRequests.filter(request => {
+        const categoryMatch = !categoryFilter || request.category === categoryFilter;
+        const urgencyMatch = !urgencyFilter || request.urgency === urgencyFilter;
+        return categoryMatch && urgencyMatch;
+      });
+      
+      renderRequests();
+      updatePendingCount();
+    }
+
+    function refreshRequests() {
+      loadPendingRequests();
+      showNotification('Requests refreshed', 'success');
+    }
+
+    // Response modal
+    function openResponseModal(requestId) {
+      const request = allRequests.find(r => r.id === requestId);
+      if (!request) return;
+
+      document.getElementById('responseRequestId').value = requestId;
+      document.getElementById('requestDetails').innerHTML = `
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <div class="flex items-center space-x-2 mb-2">
+            <span class="bg-${getUrgencyColor(request.urgency)}-100 text-${getUrgencyColor(request.urgency)}-800 px-2 py-1 rounded text-sm">
+              ${request.urgency.toUpperCase()}
+            </span>
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+              ${request.category}
+            </span>
+          </div>
+          <p class="text-gray-700">${request.message}</p>
+          <p class="text-sm text-gray-500 mt-2">${new Date(request.createdAt).toLocaleString()}</p>
+        </div>
+      `;
+
+      document.getElementById('responseModal').classList.remove('hidden');
+      document.getElementById('responseModal').classList.add('flex');
+      document.getElementById('responseMessage').focus();
+    }
+
+    function closeResponseModal() {
+      document.getElementById('responseModal').classList.add('hidden');
+      document.getElementById('responseModal').classList.remove('flex');
+      document.getElementById('responseForm').reset();
+    }
+
+    // Handle response submission
+    document.getElementById('responseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const requestId = document.getElementById('responseRequestId').value;
+      const response = document.getElementById('responseMessage').value.trim();
+      const isPublic = document.getElementById('makePublic').checked;
+
+      if (!response) {
+        showNotification('Please enter a response', 'error');
+        return;
+      }
+
+      try {
+        const result = await fetch('/api/counselor/respond', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            requestId,
+            response,
+            counselorId: 'counselor-demo',
+            isPublic
+          })
+        });
+
+        if (result.ok) {
+          showNotification('Response sent successfully!', 'success');
+          closeResponseModal();
+          loadPendingRequests();
+        } else {
+          throw new Error('Failed to send response');
+        }
+      } catch (error) {
+        console.error('Error sending response:', error);
+        showNotification('Error sending response', 'error');
+      }
+    });
+
+    // Load analytics
+    async function loadAnalytics() {
+      try {
+        // This would typically fetch from analytics endpoints
+        // For demo purposes, using mock data
+        document.getElementById('totalRequests').textContent = Math.floor(Math.random() * 100) + 50;
+        document.getElementById('respondedRequests').textContent = Math.floor(Math.random() * 80) + 30;
+        document.getElementById('responseRate').textContent = Math.floor(Math.random() * 30) + 70 + '%';
+
+        // Load mood analytics
+        const moodResponse = await fetch('/api/mood-analytics');
+        const moodData = await moodResponse.json();
+        
+        const moodCounts = {
+          great: 0, good: 0, okay: 0, stressed: 0, sad: 0
+        };
+        
+        moodData.forEach(mood => {
+          moodCounts[mood._id] = mood.count;
+        });
+
+        document.getElementById('moodGreat').textContent = moodCounts.great;
+        document.getElementById('moodGood').textContent = moodCounts.good;
+        document.getElementById('moodOkay').textContent = moodCounts.okay;
+        document.getElementById('moodStressed').textContent = moodCounts.stressed;
+        document.getElementById('moodSad').textContent = moodCounts.sad;
+
+      } catch (error) {
+        console.error('Error loading analytics:', error);
+      }
+    }
+
+    // Load success stories
+    async function loadSuccessStories() {
+      try {
+        // This would fetch pending success stories for approval
+        const container = document.getElementById('successStoriesList');
+        container.innerHTML = `
+          <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-star text-4xl mb-4"></i>
+            <p>Success stories management coming soon</p>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading success stories:', error);
+      }
+    }
+
+    // Chat monitor
+    function updateChatMonitor(data) {
+      const container = document.getElementById('chatSessions');
+      // Update with real chat session data
+      document.getElementById('activeSessions').textContent = '1';
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('notifications');
+      const notification = document.createElement('div');
+      
+      const colors = {
+        success: 'bg-green-100 border-green-400 text-green-700',
+        error: 'bg-red-100 border-red-400 text-red-700',
+        info: 'bg-blue-100 border-blue-400 text-blue-700'
+      };
+
+      notification.className = `border-l-4 p-4 rounded shadow-md mb-2 ${colors[type]} fade-in`;
+      notification.innerHTML = `
+        <div class="flex justify-between items-center">
+          <span>${message}</span>
+          <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+
+      container.appendChild(notification);
+
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+
+    // Initialize with default section visible
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('help-requests').style.display = 'block';
+    });
+  </script>
+
+</body>
+</html>

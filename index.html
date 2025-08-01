@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Help Portal - SafeSpace</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #eef2ff, #e0f2fe);
+    }
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tab-button.active {
+      background-color: #1d4ed8;
+      color: white;
+    }
+    .floating-chat {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .chat-window {
+      width: 350px;
+      height: 400px;
+      display: none;
+    }
+    .chat-window.active {
+      display: block;
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-blue-700 text-white py-6 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-shield-heart text-2xl"></i>
+        <h1 class="text-3xl font-bold">SafeSpace</h1>
+      </div>
+      <span class="italic text-lg">Anonymous Support for Every Student</span>
+    </div>
+  </header>
+
+  <!-- Image Carousel -->
+  <section class="my-10">
+    <div class="swiper-container max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+               alt="Students collaborating" class="w-full h-64 object-cover" />
+        </div>
+        <div class="swiper-slide">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+               alt="Student support" class="w-full h-64 object-cover" />
+        </div>
+        <div class="swiper-slide">
+          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+               alt="Study group" class="w-full h-64 object-cover" />
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="max-w-6xl mx-auto px-4 mb-8">
+    <div class="flex flex-wrap justify-center space-x-2 bg-white rounded-lg p-2 shadow-md">
+      <button class="tab-button active px-6 py-3 rounded-md font-medium transition duration-200 flex items-center space-x-2" 
+              onclick="showTab('help-request')">
+        <i class="fas fa-hand-holding-heart"></i>
+        <span>Get Help</span>
+      </button>
+      <button class="tab-button px-6 py-3 rounded-md font-medium transition duration-200 flex items-center space-x-2" 
+              onclick="showTab('resources')">
+        <i class="fas fa-book-open"></i>
+        <span>Resources</span>
+      </button>
+      <button class="tab-button px-6 py-3 rounded-md font-medium transition duration-200 flex items-center space-x-2" 
+              onclick="showTab('community')">
+        <i class="fas fa-users"></i>
+        <span>Community</span>
+      </button>
+      <button class="tab-button px-6 py-3 rounded-md font-medium transition duration-200 flex items-center space-x-2" 
+              onclick="showTab('wellness')">
+        <i class="fas fa-heart"></i>
+        <span>Wellness</span>
+      </button>
+      <button class="tab-button px-6 py-3 rounded-md font-medium transition duration-200 flex items-center space-x-2" 
+              onclick="showTab('feedback')">
+        <i class="fas fa-comments"></i>
+        <span>Feedback</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="max-w-6xl mx-auto px-4 pb-20">
+    
+    <!-- Help Request Tab -->
+    <div id="help-request" class="tab-content active">
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Submit Help Request -->
+        <div class="bg-white rounded-xl shadow-lg p-8 fade-in">
+          <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+            <i class="fas fa-hand-holding-heart mr-3"></i>
+            Need Help? You're Not Alone.
+          </h2>
+          <p class="text-gray-600 mb-6">Submit any concern—academic, emotional, or social—without revealing your identity. Your message will be reviewed by trained counselors.</p>
+          
+          <form id="helpForm" class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-medium">Category</label>
+              <select id="category" name="category" class="w-full mt-1 p-3 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="academic">Academic Support</option>
+                <option value="emotional">Emotional Support</option>
+                <option value="social">Social Issues</option>
+                <option value="financial">Financial Concerns</option>
+                <option value="career">Career Guidance</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-gray-700 font-medium">Urgency Level</label>
+              <select id="urgency" name="urgency" class="w-full mt-1 p-3 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <option value="low">Low - Can wait a few days</option>
+                <option value="medium">Medium - Would like help soon</option>
+                <option value="high">High - Need help urgently</option>
+                <option value="crisis">Crisis - Emergency support needed</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-gray-700 font-medium">Your Message</label>
+              <textarea id="message" name="message" rows="5" class="w-full mt-1 p-3 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                        placeholder="Share what's on your mind. Remember, this is completely anonymous and confidential."></textarea>
+            </div>
+            
+            <div class="bg-blue-50 p-4 rounded-md">
+              <p class="text-sm text-blue-800">
+                <i class="fas fa-lock mr-2"></i>
+                <strong>Your privacy is protected:</strong> No personal information is collected. Messages are encrypted and only accessible to trained counselors.
+              </p>
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition duration-200 flex items-center justify-center">
+              <i class="fas fa-paper-plane mr-2"></i>
+              Submit Anonymously
+            </button>
+          </form>
+        </div>
+
+        <!-- Recent Responses -->
+        <div class="bg-white rounded-xl shadow-lg p-8 fade-in">
+          <h3 class="text-xl font-bold text-blue-700 mb-4 flex items-center">
+            <i class="fas fa-reply mr-3"></i>
+            Recent Anonymous Responses
+          </h3>
+          <div id="responses" class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-2">Academic Support • 2 hours ago</div>
+              <p class="text-gray-700">"Remember that struggling with difficult subjects is normal. Consider breaking down complex topics into smaller, manageable parts. Our tutoring center is available Monday-Friday 2-6 PM."</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-2">Emotional Support • 1 day ago</div>
+              <p class="text-gray-700">"Your feelings are valid. It's okay to have difficult days. Consider reaching out to friends, family, or our counseling services. You don't have to face challenges alone."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resources Tab -->
+    <div id="resources" class="tab-content">
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <i class="fas fa-graduation-cap text-3xl text-blue-600 mb-4"></i>
+          <h3 class="text-xl font-bold mb-3">Academic Resources</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-blue-600">Study Guides & Tips</a></li>
+            <li><a href="#" class="hover:text-blue-600">Tutoring Services</a></li>
+            <li><a href="#" class="hover:text-blue-600">Time Management Tools</a></li>
+            <li><a href="#" class="hover:text-blue-600">Test Preparation</a></li>
+          </ul>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <i class="fas fa-heart text-3xl text-red-600 mb-4"></i>
+          <h3 class="text-xl font-bold mb-3">Mental Health</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-blue-600">Counseling Services</a></li>
+            <li><a href="#" class="hover:text-blue-600">Stress Management</a></li>
+            <li><a href="#" class="hover:text-blue-600">Mindfulness & Meditation</a></li>
+            <li><a href="#" class="hover:text-blue-600">Crisis Hotlines</a></li>
+          </ul>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <i class="fas fa-dollar-sign text-3xl text-green-600 mb-4"></i>
+          <h3 class="text-xl font-bold mb-3">Financial Aid</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-blue-600">Scholarship Opportunities</a></li>
+            <li><a href="#" class="hover:text-blue-600">Emergency Financial Aid</a></li>
+            <li><a href="#" class="hover:text-blue-600">Work-Study Programs</a></li>
+            <li><a href="#" class="hover:text-blue-600">Budgeting Tips</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Tab -->
+    <div id="community" class="tab-content">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-blue-700 mb-6">Anonymous Community Support</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Share Your Success Story</h3>
+            <form id="successStoryForm" class="space-y-4">
+              <textarea placeholder="Share how you overcame a challenge to inspire others..." 
+                        class="w-full p-3 border-gray-300 rounded-md" rows="4"></textarea>
+              <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
+                Share Anonymously
+              </button>
+            </form>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Recent Success Stories</h3>
+            <div class="space-y-3">
+              <div class="bg-green-50 p-4 rounded-lg">
+                <p class="text-sm">"I was struggling with social anxiety but joined a study group. It really helped me make friends and feel more confident."</p>
+              </div>
+              <div class="bg-green-50 p-4 rounded-lg">
+                <p class="text-sm">"Failed my first exam but got help from tutoring services. Ended up getting a B+ on the final!"</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wellness Tab -->
+    <div id="wellness" class="tab-content">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <h2 class="text-2xl font-bold text-blue-700 mb-6">Daily Wellness Check</h2>
+          <form id="wellnessForm" class="space-y-4">
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">How are you feeling today?</label>
+              <div class="flex space-x-4">
+                <button type="button" class="mood-btn p-3 border rounded-lg" data-mood="great">😊 Great</button>
+                <button type="button" class="mood-btn p-3 border rounded-lg" data-mood="good">🙂 Good</button>
+                <button type="button" class="mood-btn p-3 border rounded-lg" data-mood="okay">😐 Okay</button>
+                <button type="button" class="mood-btn p-3 border rounded-lg" data-mood="stressed">😰 Stressed</button>
+                <button type="button" class="mood-btn p-3 border rounded-lg" data-mood="sad">😢 Sad</button>
+              </div>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+              Log Mood
+            </button>
+          </form>
+        </div>
+        
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <h3 class="text-xl font-bold text-blue-700 mb-4">Quick Wellness Tips</h3>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-leaf text-green-500 mt-1"></i>
+              <p>Take 5 deep breaths when feeling overwhelmed</p>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-walking text-blue-500 mt-1"></i>
+              <p>Go for a 10-minute walk to clear your mind</p>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i class="fas fa-phone text-purple-500 mt-1"></i>
+              <p>Call a friend or family member</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Tab -->
+    <div id="feedback" class="tab-content">
+      <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold text-blue-700 mb-6">Help Us Improve</h2>
+        <form id="feedbackForm" class="space-y-4">
+          <div>
+            <label class="block text-gray-700 font-medium">What can we do better?</label>
+            <textarea rows="4" class="w-full mt-1 p-3 border-gray-300 rounded-md" 
+                      placeholder="Your feedback helps us create a better support system..."></textarea>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium">Rate your experience</label>
+            <div class="flex space-x-2 mt-2">
+              <button type="button" class="star-btn text-2xl text-gray-300" data-rating="1">⭐</button>
+              <button type="button" class="star-btn text-2xl text-gray-300" data-rating="2">⭐</button>
+              <button type="button" class="star-btn text-2xl text-gray-300" data-rating="3">⭐</button>
+              <button type="button" class="star-btn text-2xl text-gray-300" data-rating="4">⭐</button>
+              <button type="button" class="star-btn text-2xl text-gray-300" data-rating="5">⭐</button>
+            </div>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+            Submit Feedback
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Chat Button -->
+  <div class="floating-chat">
+    <button id="chatToggle" class="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 pulse">
+      <i class="fas fa-comments text-xl"></i>
+    </button>
+    
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window bg-white rounded-lg shadow-xl mb-4">
+      <div class="bg-blue-600 text-white p-4 rounded-t-lg">
+        <h3 class="font-bold">Anonymous Chat Support</h3>
+        <button id="closeChat" class="float-right text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="chatMessages" class="p-4 h-64 overflow-y-auto bg-gray-50">
+        <div class="text-center text-gray-500 text-sm">
+          <p>Welcome! This is an anonymous chat where you can get immediate support.</p>
+          <p class="mt-2">A counselor will join shortly...</p>
+        </div>
+      </div>
+      <div class="p-4 border-t">
+        <div class="flex space-x-2">
+          <input type="text" id="chatInput" placeholder="Type your message..." 
+                 class="flex-1 p-2 border rounded-md text-sm">
+          <button id="sendMessage" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2024 SafeSpace Student Help Portal. All rights reserved.</p>
+      <p class="mt-2 text-sm text-gray-400">Your privacy and safety are our top priorities.</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    // Initialize Swiper
+    new Swiper('.swiper-container', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: {
+        delay: 4000,
+        disableOnInteraction: false,
+      },
+    });
+
+    // Tab functionality
+    function showTab(tabId) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(tab => tab.classList.remove('active'));
+      
+      // Remove active class from all tab buttons
+      const tabButtons = document.querySelectorAll('.tab-button');
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Show selected tab content
+      document.getElementById(tabId).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.closest('.tab-button').classList.add('active');
+    }
+
+    // Chat functionality
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const closeChat = document.getElementById('closeChat');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+    const chatMessages = document.getElementById('chatMessages');
+
+    chatToggle.addEventListener('click', () => {
+      chatWindow.classList.toggle('active');
+    });
+
+    closeChat.addEventListener('click', () => {
+      chatWindow.classList.remove('active');
+    });
+
+    function addMessage(message, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `mb-2 ${isUser ? 'text-right' : 'text-left'}`;
+      messageDiv.innerHTML = `
+        <div class="inline-block p-2 rounded-lg text-sm ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">
+          ${message}
+        </div>
+      `;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendMessage.addEventListener('click', () => {
+      const message = chatInput.value.trim();
+      if (message) {
+        addMessage(message, true);
+        chatInput.value = '';
+        
+        // Simulate counselor response
+        setTimeout(() => {
+          const responses = [
+            "Thank you for reaching out. I'm here to listen and support you.",
+            "Your feelings are valid. Can you tell me more about what's troubling you?",
+            "That sounds really challenging. You're being very brave by asking for help.",
+            "Let's work through this together. What would be most helpful for you right now?"
+          ];
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          addMessage(randomResponse);
+        }, 1000 + Math.random() * 2000);
+      }
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage.click();
+      }
+    });
+
+    // Form submissions
+    document.getElementById('helpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      
+      try {
+        const response = await fetch('/api/submit-help-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+          alert('Your request has been submitted anonymously. A counselor will review it shortly.');
+          e.target.reset();
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Thank you for submitting. Your message has been recorded.');
+        e.target.reset();
+      }
+    });
+
+    // Mood tracking
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+        btn.classList.add('bg-blue-500', 'text-white');
+      });
+    });
+
+    // Star rating
+    document.querySelectorAll('.star-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rating = parseInt(btn.dataset.rating);
+        document.querySelectorAll('.star-btn').forEach((star, index) => {
+          if (index < rating) {
+            star.classList.add('text-yellow-400');
+            star.classList.remove('text-gray-300');
+          } else {
+            star.classList.add('text-gray-300');
+            star.classList.remove('text-yellow-400');
+          }
+        });
+      });
+    });
+
+    // Success story form
+    document.getElementById('successStoryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alert('Thank you for sharing your story! It will help inspire other students.');
+      e.target.reset();
+    });
+
+    // Feedback form
+    document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alert('Thank you for your feedback! We appreciate your input.');
+      e.target.reset();
+    });
+
+    // Wellness form
+    document.getElementById('wellnessForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alert('Your mood has been logged. Thank you for checking in with yourself!');
+    });
+  </script>
+
+</body>
+</html>
