@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Help Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #eef2ff, #e0f2fe);
+    }
+    .fade-in {
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800">
+
+  <header class="bg-blue-700 text-white py-6 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-3xl font-bold">SafeSpace</h1>
+      <span class="italic text-lg">Anonymous Support for Every Student</span>
+    </div>
+  </header>
+
+  <section class="my-10">
+    <div class="swiper-container max-w-4xl mx-auto rounded-xl overflow-hidden shadow-lg">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="C:\Users\captr\Downloads\pic ball.png" />
+        </div>
+        <div class="swiper-slide">
+          <img src="https://psdchallenge.psd.gov.sg/images/default-source/challenge-library/ideas/your-say/social-causes-that-make-a-difference/your-say-social-cause-01.png" />
+        </div>
+        <div class="swiper-slide">
+          <img src="https://varthana.com/student/wp-content/uploads/2024/12/why-every-student-needs-a-study-group-to-unlock-better-grades-and-confidence.jpg" />
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </section>
+
+  <section class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 fade-in">
+    <h2 class="text-2xl font-bold text-blue-700 mb-4">Need Help? You're Not Alone.</h2>
+    <p class="text-gray-600 mb-6">Submit any concern, emotional, or social—without revealing your name(one way for confessions and not feeling judged).</p>
+    <form class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-medium">Category</label>
+        <select class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option>Emotional</option>
+          <option>Social</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium">Your Message</label>
+        <textarea rows="5" class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Type your message here..."></textarea>
+      </div>
+      <div>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">Submit Anonymously</button>
+      </div>
+    </form>
+  </section>
+
+--/ Form /--
+
+
+
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    new Swiper('.swiper-container', {
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+    });
+  </script>
+
+</body>
+</html>
